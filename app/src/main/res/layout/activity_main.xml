@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@android:color/holo_red_light"
     android:orientation="vertical"
     tools:context=".view.MainActivity">
 
@@ -27,6 +28,7 @@
         android:layout_marginHorizontal="40dp"
         android:text="Salvar"
         android:onClick="salvar"
+        android:background="@android:color/holo_green_light"
         />
 
     <TextView

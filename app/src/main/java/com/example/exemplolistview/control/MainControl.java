@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.exemplolistview.R;
 import com.example.exemplolistview.model.Estado;
+import com.example.exemplolistview.model.EstadoBO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +73,6 @@ public class MainControl {
 
             }
         });
-
     }
 
     private Estado getDadosForm(){
@@ -80,6 +80,16 @@ public class MainControl {
         e.setNome(editNome.getText().toString());
         e.setSigla(editSigla.getText().toString());
         return e;
+    }
+
+    private boolean valida(Estado estado){
+        if (!EstadoBO.valida(estado)){
+            editNome.setError("Preencha o campo 'NOME' corretamente!");
+            editSigla.setError("Preencha o campo 'SIGLA' corretamente");
+            return false;
+        } else {
+            return true;
+        }
     }
 
     private void addEstadoLv(Estado e){
@@ -127,15 +137,16 @@ public class MainControl {
     }
 
     public void salvarAction(){
-        if (estado==null){
-            Estado e = getDadosForm();
-            addEstadoLv(e);
-            atualizarContador();
-        } else {
-            Estado e = getDadosForm();
-            alterarEstado(e);
-        }
-        estado = null;
+        //if (valida(estado))
+            if (estado==null){
+                Estado e = getDadosForm();
+                addEstadoLv(e);
+                atualizarContador();
+            } else {
+                Estado e = getDadosForm();
+                alterarEstado(e);
+            }
+            estado = null;
     }
     private void confirmarEdicao(final Estado e){
         AlertDialog.Builder alerta = new AlertDialog.Builder(activity);
