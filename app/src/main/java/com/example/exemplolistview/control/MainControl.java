@@ -32,7 +32,7 @@ public class MainControl {
         initComponents();
     }
 
-    public void initComponents(){
+    public void initComponents() {
         editNome = activity.findViewById(R.id.editNome);
         editSigla = activity.findViewById(R.id.editSigla);
         lvEstado = activity.findViewById(R.id.lvEstado);
@@ -40,9 +40,9 @@ public class MainControl {
         configListView();
     }
 
-    public void configListView(){
+    public void configListView() {
         listEstado = new ArrayList<>();
-        //listEstado.add(new Estado("Santa Catarina", "SC"));
+        listEstado.add(new Estado("Santa Catarina", "SC"));
         adapterEstado = new ArrayAdapter<>(
                 activity,
                 android.R.layout.simple_list_item_1,
@@ -53,7 +53,7 @@ public class MainControl {
         cliqueLongo();
     }
 
-    public void cliqueCurto(){
+    public void cliqueCurto() {
         lvEstado.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -62,7 +62,8 @@ public class MainControl {
             }
         });
     }
-    public void cliqueLongo(){
+
+    public void cliqueLongo() {
         lvEstado.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -70,44 +71,46 @@ public class MainControl {
                 confirmarExclusao(estado);
                 //return false; // Executa o clique curto junto
                 return true; // Não executa o clique curto junto
-
             }
         });
     }
 
-    private Estado getDadosForm(){
+    private Estado getDadosForm() {
         Estado e = new Estado();
         e.setNome(editNome.getText().toString());
         e.setSigla(editSigla.getText().toString());
         return e;
     }
 
-    private boolean valida(Estado estado){
-        if (!EstadoBO.valida(estado)){
+    private boolean valida(EstadoBO estadoBO) {
+        if (!estadoBO.validaNome(estado)) {
             editNome.setError("Preencha o campo 'NOME' corretamente!");
-            editSigla.setError("Preencha o campo 'SIGLA' corretamente");
+            editNome.requestFocus();
             return false;
-        } else {
-            return true;
+        } else if (!estadoBO.validaSigla(estado)) {
+            editSigla.setError("Preencha o campo 'SIGLA' corretamente");
+            editSigla.requestFocus();
+            return false;
         }
+        return true;
     }
 
-    private void addEstadoLv(Estado e){
+    private void addEstadoLv(Estado e) {
         adapterEstado.add(e);
     }
 
-    private void alterarEstado(Estado e){
+    private void alterarEstado(Estado e) {
         estado.setNome(e.getNome());
         estado.setSigla(e.getSigla());
         adapterEstado.notifyDataSetChanged();
     }
 
-    private void excluirEstadoLv(Estado e){
+    private void excluirEstadoLv(Estado e) {
         adapterEstado.remove(e);
         atualizarContador();
     }
 
-    private void confirmarExclusao(final Estado e){
+    private void confirmarExclusao(final Estado e) {
         AlertDialog.Builder alerta = new AlertDialog.Builder(activity);
         alerta.setTitle("Excluir Estado");
         alerta.setMessage(e.toString());
@@ -127,28 +130,42 @@ public class MainControl {
         alerta.show();
     }
 
-    private void carregarForm(Estado e){
+    private void carregarForm(Estado e) {
         editNome.setText(e.getNome());
         editSigla.setText(e.getSigla());
     }
 
-    private void atualizarContador(){
+    private void atualizarContador() {
         tvContador.setText("Contador: " + adapterEstado.getCount());
     }
 
-    public void salvarAction(){
-        //if (valida(estado))
-            if (estado==null){
-                Estado e = getDadosForm();
-                addEstadoLv(e);
-                atualizarContador();
-            } else {
-                Estado e = getDadosForm();
-                alterarEstado(e);
-            }
-            estado = null;
+    public void salvarAction() {
+        estado = new Estado();
+        estado = getDadosForm();
+        EstadoBO estadoBO = new EstadoBO(estado);
+
+        if (valida(estadoBO)) {
+            Estado e = getDadosForm();
+            addEstadoLv(e);
+            atualizarContador();
+        } else {
+            Estado e = getDadosForm();
+            alterarEstado(e);
+        }
+        estado = null;
+
+        /*if (estado == null) {
+            Estado e = getDadosForm();
+            addEstadoLv(e);
+            atualizarContador();
+        } else {
+            Estado e = getDadosForm();
+            alterarEstado(e);
+        }
+        estado = null;*/
     }
-    private void confirmarEdicao(final Estado e){
+
+    private void confirmarEdicao(final Estado e) {
         AlertDialog.Builder alerta = new AlertDialog.Builder(activity);
         alerta.setTitle("Mostrar dados");
         alerta.setMessage(e.toString());

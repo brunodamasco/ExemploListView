@@ -1,8 +1,14 @@
 package com.example.exemplolistview.model;
 
 public class EstadoBO {
-    public static boolean valida(Estado estado){
-        return estado!= null && estado.getNome() != null && estado.getNome().isEmpty() &&
-                estado.getSigla() != null;
+    public EstadoBO(Estado estado) {
+    }
+
+    public static boolean validaNome(Estado estado) {
+        return estado.getNome() != null && !estado.getNome().isEmpty();
+    }
+
+    public static boolean validaSigla(Estado estado) {
+        return estado.getSigla() != null && !estado.getSigla().isEmpty();
     }
 }
