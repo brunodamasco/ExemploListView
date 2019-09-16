@@ -143,7 +143,6 @@ public class MainControl {
         estado = new Estado();
         estado = getDadosForm();
         EstadoBO estadoBO = new EstadoBO(estado);
-
         if (valida(estadoBO)) {
             Estado e = getDadosForm();
             addEstadoLv(e);
@@ -153,16 +152,6 @@ public class MainControl {
             alterarEstado(e);
         }
         estado = null;
-
-        /*if (estado == null) {
-            Estado e = getDadosForm();
-            addEstadoLv(e);
-            atualizarContador();
-        } else {
-            Estado e = getDadosForm();
-            alterarEstado(e);
-        }
-        estado = null;*/
     }
 
     private void confirmarEdicao(final Estado e) {
