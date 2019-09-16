@@ -13,7 +13,7 @@ public class DaoHelper<T> {
 
     public DaoHelper (Context c, Class className) {
         this.className = className;
-        if (mInstance == null) mInstance = new MyOrmLiteHelper(c.getApplicationContext())
+        if (mInstance == null) mInstance = new MyOrmLiteHelper(c.getApplicationContext());
     }
 
     public Dao<T, Integer> getDao() {
