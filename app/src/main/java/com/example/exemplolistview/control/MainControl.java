@@ -11,10 +11,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.exemplolistview.R;
+import com.example.exemplolistview.dao.EstadoDao;
 import com.example.exemplolistview.model.Estado;
 import com.example.exemplolistview.model.EstadoBO;
+import com.j256.ormlite.dao.Dao;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.List;
 
 public class MainControl {
@@ -27,9 +29,13 @@ public class MainControl {
     private Estado estado;
     private TextView tvContador;
 
+    private EstadoDao estadoDao;
+
     public MainControl(Activity activity) {
         this.activity = activity;
+        estadoDao = new EstadoDao(activity);
         initComponents();
+        atualizarContador();
     }
 
     public void initComponents() {
@@ -41,7 +47,12 @@ public class MainControl {
     }
 
     public void configListView() {
-        listEstado = new ArrayList<>();
+        try {
+            listEstado = estadoDao.getDao().queryForAll();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         listEstado.add(new Estado("Santa Catarina", "SC"));
         adapterEstado = new ArrayAdapter<>(
                 activity,
@@ -123,8 +134,15 @@ public class MainControl {
         alerta.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                excluirEstadoLv(e);
-                estado = null;
+                try {
+                    if (estadoDao.getDao().delete(estado) > 0) {
+                        excluirEstadoLv(e);
+                        atualizarContador();
+                    }
+                    estado = null;
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
         alerta.show();
@@ -140,16 +158,24 @@ public class MainControl {
     }
 
     public void salvarAction() {
-        estado = new Estado();
-        estado = getDadosForm();
-        EstadoBO estadoBO = new EstadoBO(estado);
-        if (valida(estadoBO)) {
-            Estado e = getDadosForm();
-            addEstadoLv(e);
-            atualizarContador();
+        if (estado == null){
+            estado = getDadosForm();
         } else {
             Estado e = getDadosForm();
-            alterarEstado(e);
+            estado.setNome(e.getNome());
+            estado.setSigla(e.getSigla());
+        }
+        try {
+            Dao.CreateOrUpdateStatus res = estadoDao.getDao().createOrUpdate(estado);
+            if (res.isCreated()) {
+                addEstadoLv(estado);
+                atualizarContador();
+            } else if (res.isUpdated()) {
+                Estado e = getDadosForm();
+                alterarEstado(e);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         estado = null;
     }

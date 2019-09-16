@@ -1,4 +1,4 @@
-package com.example.exemplolistview.dao.Helper;
+package com.example.exemplolistview.dao.helper;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,13 +10,14 @@ import com.j256.ormlite.table.TableUtils;
 
 import java.sql.SQLException;
 
-public class MyOrmLiteHelper extends OrmLiteSqliteOpenHelper {
-    private static final String DATABASE_NAME = "minha_pedida";
-    private static final int DATABASE_VERSION = 1;
+public class MyORMLiteHelper extends OrmLiteSqliteOpenHelper {
+    private static final String DATABASE_NAME = "estado.db";
+    private static final int DATABASE_VERSION = 2;
 
-    public MyOrmLiteHelper(Context c){
+    public MyORMLiteHelper(Context c) {
         super(c, DATABASE_NAME, null, DATABASE_VERSION);
     }
+
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource) {
         try {
